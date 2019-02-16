@@ -1,0 +1,74 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/dashboard">App</a></li>
+    <li class="breadcrumb-item"><%= @app.app_id %></li>
+    <li class="breadcrumb-item active" aria-current="page">Subscription</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-12">
+    <%= form_for @changeset, subscription_path(@conn, :list, @app.app_id ), [class: "ml-auto"], fn f -> %>
+			<h4>Add subscription</h4>
+			<h6>To receive HTTP POST calls when a monitored account receives a payment, you need to subscribe to activity for one or more XRPL accounts.</h6>
+			<div class="alert alert-primary" role="alert"><strong>Note:</strong> You must have a <a href="<%= webhook_path(@conn, :list, @app.app_id ) %>">registered webhook config</a> to add address, and you must have whitelisted the callback URLs for your app following the setup instructions.</div>
+      <div class="form-row align-items-right">
+			<div class="col-12">
+				<small  class="text-muted">
+					Must be a valid XRPL account address, eg. <code>rXXXXXXX....</code>
+				</small>
+				<%= input f, :address, using: :text_input , label: [class: "sr-only"], input: [placeholder: "XRPL account address"]%>
+				<%= error_tag f, :url %>
+			</div>
+			<div class="col-12 text-right">
+	  		<button class="btn btn-primary mb-2" type="submit"><i class="fa fa-save"></i> Add</button>
+			</div>
+		</div>
+    <% end %>
+    </br>
+  </div>
+</div>
+</br>
+<div class="row">
+  <div class="col-12">
+    <%= if not Enum.empty?(@subscriptions) do %>
+      <table class="table">
+	<thead>
+	  <tr>
+			<th>ID</th>
+	    <th>Address</th>
+	    <th>Date Added</th>
+	    <th></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <%= for subscription <- @subscriptions do %>
+	    <tr>
+	      <td><code><%= subscription.subscription_id %></code></td>
+	      <td><a target="_blank" href="https://bithomp.com/explorer/<%=  subscription.address %>"><%= subscription.address %></a></td>
+	      <td ><%= subscription.inserted_at %></td>
+	      <td>
+					<div class="dropdown" >
+						<button class="btn btn-light pull-right" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fa fa-ellipsis-v"></i>
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item delete" href="<%= subscription_path(@conn, :delete, @app.app_id, subscription.subscription_id) %>"><i class="fa fa-trash"></i>&nbsp&nbspDelete</a>
+						</div>
+					</div>
+	      </td>
+	    </tr>
+	  <% end %>
+	</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="100"></th>
+					</tr>
+				</tfoot>
+      </table>
+    <% else %>
+      <hr>
+      <p class="alert alert-warning text-center mt-3">No subscriptions added yet</p>
+    <% end %>
+  </div>
+</div>

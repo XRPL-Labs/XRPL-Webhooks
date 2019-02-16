@@ -1,0 +1,20 @@
+#!/bin/sh
+
+cd /usr/src/app
+
+if [[ ! -e /installed ]]; then
+    touch /installed
+    
+    echo "Not installed yet, run init scripts"
+    
+    echo "Database (ecto) create & migrate"
+    mix ecto.create && mix ecto.migrate
+    
+    echo "Run tests"
+    mix test
+    # DISABLED, MOTHERF&#@$%%#@$* AGLIO (OR RATHER: PROTAGONIST / GYP)
+    # mix bird.gen.docs
+fi
+
+# Start app, pass through other arguments
+exec mix phx.server "$@"

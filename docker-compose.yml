@@ -1,0 +1,43 @@
+version: '2.1'
+
+networks:
+  xrpl-hooks-bridge:
+    driver: bridge
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: xrplwebhook
+    restart: always
+    container_name: xrplwebhook
+    networks:
+      - xrpl-hooks-bridge
+    volumes:
+      - ./lib/web/templates:/usr/src/app/lib/web/templates
+    ports:
+      - 4000:4000
+    links:
+      - postgres
+    environment:
+      - PGSQL_DEV_DATABASE=xrpllabsdev
+      - PGSQL_DEV_USERNAME=postgres
+      - PGSQL_DEV_PASSWORD=xrpllabswebhook
+      - PGSQL_DEV_HOSTNAME=postgres
+      - PGSQL_TEST_DATABASE=xrpllabstst
+      - PGSQL_TEST_USERNAME=postgres
+      - PGSQL_TEST_PASSWORD=xrpllabswebhook
+      - PGSQL_TEST_HOSTNAME=postgres
+      - GITHUB_CLIENT_ID=XXXX
+      - GITHUB_CLIENT_SECRET=XXXX
+      - TWITTER_CONSUMER_KEY=XXXX
+      - TWITTER_CONSUMER_SECRET=XXXX
+  postgres:
+    image: postgres:alpine
+    restart: always
+    networks:
+      - xrpl-hooks-bridge
+    container_name: xrplwebhook_db
+    environment:
+      - POSTGRES_PASSWORD=xrpllabswebhook

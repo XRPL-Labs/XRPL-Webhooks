@@ -1,0 +1,54 @@
+APP="espy"
+
+BUILD_HOST="webhook"
+BUILD_USER="root"
+BUILD_AT="/tmp/edeliver/$APP/builds"
+
+PRODUCTION_HOSTS="webhook"
+PRODUCTION_USER="root"
+DELIVER_TO="/srv/app"
+
+ECTO_REPOSITORY="Elixir.Espy.Repo"
+AUTO_VERSION=revision
+
+pre_erlang_get_and_update_deps() {
+  local _prod_secret_path="/root/.secret/prod.secret.exs"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+    "
+  fi
+}
+
+pre_erlang_clean_compile() {
+  status "Installing NPM dependencies"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+		cd '$BUILD_AT/assets'
+    npm install --no-warnings --loglevel=error
+  "
+
+  status "Building static files"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT'
+    mkdir -p priv/static
+
+		cd '$BUILD_AT/assets'
+    npm run deploy --no-warnings --loglevel=error
+  "
+
+  status "Running phoenix.digest"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT'
+    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD ecto.migrate $SILENCE
+    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
+  "
+}

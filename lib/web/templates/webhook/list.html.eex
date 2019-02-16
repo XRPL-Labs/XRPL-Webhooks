@@ -1,0 +1,80 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/dashboard">App</a></li>
+    <li class="breadcrumb-item"><%= @app.app_id %></li>
+    <li class="breadcrumb-item active" aria-current="page">Webhooks</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-12">
+    <%= form_for @changeset, webhook_path(@conn, :list, @app.app_id ), [class: "ml-auto"], fn f -> %>
+      <div class="form-row align-items-right">
+	<div class="col-12">
+	  <h4>Add webhook</h4>
+	  <h6>To receive HTTP POST calls when a monitored account receives a payment, you need to register one or more HTTP endpoints that will receive a POST call when a payment is made to one of the subscribed accounts.</h6>
+	  <small  class="text-muted">
+	    Must be entered with protocole, eg. <code>https://myapp.com</code>
+	  </small>
+	  <%= input f, :url, using: :text_input , label: [class: "sr-only"], input: [placeholder: "URL"]%>
+	  <%= error_tag f, :url %>
+	  <div class="text-right">
+	    <button class="btn btn-primary mb-2" type="submit"><i class="fa fa-save"></i> Add</button>
+	  </div>
+	</div>
+      </div>
+    <% end %>
+  </div>
+</div>
+</br>
+<div class="row">
+  <div class="col-12">
+    <%= if not Enum.empty?(@webhooks) do %>
+      <table class="table">
+	<thead>
+	  <tr><th>ID</th>
+	    <th>URL</th>
+	    <th>Active</th>
+	    <th>Date created</th>
+	    <th></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <%= for webhook <- @webhooks do %>
+	    <tr>
+	      <td><code><%= webhook.hook_id %></code></td>
+	      <td><%= webhook.url %></td>
+	      <td>
+		<%= if webhook.deactivated do %>
+		  <i style="color: red" class="fa-exclamation-circle fa"  data-toggle="tooltip" data-placement="top" title="<%= webhook.deactivate_reason %>">
+		  <% else %>
+		    <i style="color: green" class="fa fa-check-circle "></i>
+		  <% end %>
+	      </td>
+	      <td ><%= webhook.inserted_at %></td>
+	      <td>
+		<div class="dropdown" >
+		  <button class="btn btn-light pull-right" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    <i class="fa fa-ellipsis-v"></i>
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		    <a class="dropdown-item trigger" href="<%= webhook_path(@conn, :trigger, @app.app_id, webhook.hook_id) %>"><i class="fa fa-bolt"></i>&nbsp&nbspTrigger</a>
+		    <a class="dropdown-item delete" href="<%= webhook_path(@conn, :delete, @app.app_id, webhook.hook_id) %>"><i class="fa fa-trash"></i>&nbsp&nbspDelete</a>
+		  </div>
+		</div>
+	      </td>
+	    </tr>
+	  <% end %>
+	</tbody>
+	<tfoot>
+	  <tr>
+	    <th colspan="100"></th>
+	  </tr>
+	</tfoot>
+      </table>
+    <% else %>
+      <hr />
+      <p class="mt-3 alert alert-warning text-center">No webhooks registered yet</p>
+    <% end %>
+  </div>
+</div>

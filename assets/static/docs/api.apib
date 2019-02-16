@@ -1,0 +1,238 @@
+FORMAT: 1A
+HOST: https://webhook.xrpayments.co
+
+# XRPL Webhook API
+API requires authorization. All requests must have valid
+`x-api-key` and `x-api-secret`.
+
+
+
+# Group Subscriptions
+
+## /api/v1/subscriptions
+
+### Return all Subscriptions belong to app [GET]
+Returns a list of the current Activity type subscriptions.
+
++ Request 200
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"subscriptions":[{"id":37392785,"created_at":"2019-02-16T20:49:33","address":"rqAiBkWakRA9Jr5TCahtKrPS23KBYUZhj"}],"app_id":314014556}
+
+### Subscribes address to app [POST]
+Subscribes the provided app all events for the provided address for all transaction types. After activation, all transactions for the requesting address will be sent to the provided webhook id via POST request.
+
++ Parameters
+
+    + address (string, required) - Valid XRP address
+
++ Request 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
+    + Attributes (object)
+
+            + address (string)
+
+    + Body
+
+            {"address":"rqAiBkWakRA9Jr5TCahtKrPS23KBYUZhj"}
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"success":true,"subscription_id":37392785}
+
++ Request 422 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
+    + Attributes (object)
+
+            + address (string)
+
+    + Body
+
+            {"address":"invalid_address"}
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"errors":{"address":["invalid ripple address"]}}
+
+## /api/v1/subscriptions/{subscription_id}
+
+### Delete subscription [DELETE]
+Deactivates subscription(s) for the provided subscription ID  and application for all activities. After deactivation, all events for the requesting subscription_id will no longer be sent to the webhook URL.
+
+::: note
+The subscription ID can be accessed by making a call to GET /api/v1/subscriptions.
+:::
+
++ Parameters
+
+    + subscription_id (number, required) - Subscriptions ID to deactivation
+
++ Request 204 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
++ Response 204 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"success":true}
+
+# Group Webhooks
+
+## /api/v1/webhooks
+
+### Return all webhooks [GET]
+Returns all webhook URLs and their statuses for the authenticating app
+
+::: note
+The URL will be validated via CRC request before saving. In case the validation failed, returns comprehensive error message to the requester.
+:::
+
++ Request 200
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"webhooks":[{"url":"https://myapp.com/webhook","id":83579274,"created_at":"2019-02-16T20:49:35","active":true}],"app_id":314014556}
+
+### Registers webhook URL [POST]
+Registers a webhook URL for all event types.
+
+::: note
+The URL will be validated via CRC request before saving. In case the validation failed, returns comprehensive error message to the requester.
+:::
+
++ Parameters
+
+    + url (string, required) - Encoded URL for the callback endpoint.
+
++ Request 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
+    + Attributes (object)
+
+            + url (string)
+
+    + Body
+
+            {"url":"https://myapp.com/webhook"}
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"webhook_id":83579274,"success":true}
+
++ Request 422 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
+    + Attributes (object)
+
+            + url (string)
+
+    + Body
+
+            {"url":"https://invalid-url"}
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"errors":{"url":["invalid host"]}}
+
+## /api/v1/webhooks/{webhook_id}
+
+### Delete webhook [DELETE]
+Removes the webhook from the provided application's all subscription configuration.
+
+::: note
+The webhook ID can be accessed by making a call to GET /api/v1/webhooks.
+:::
+
++ Parameters
+
+    + webhook_id (number, required) - Webhook ID to delete
+
++ Request 204 (application/json; charset=utf-8)
+
+    + Headers
+
+            x-api-key: 69682cbf-85bd-4507-8cbd-f4ee63fed1dc
+            x-api-secret: bWR3ajJSMWxwR3R5Nmd4cmtCaXNBQT09
+
++ Response 204 (application/json; charset=utf-8)
+
+    + Headers
+
+            cache-control: max-age=0, private, must-revalidate
+
+    + Body
+
+            {"success":true}

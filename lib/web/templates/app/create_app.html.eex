@@ -1,0 +1,41 @@
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/app/dashboard">App</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create App</li>
+  </ol>
+</nav>
+
+
+
+
+<div class="row">
+  <div class="col-6">
+    <h4>New App</h4>
+    <p>To setup Webhook endpoints and monitor XRPL accounts to receive hooks, you'll have to create an App.</p>
+    <p>After creating the App, you can continue setting up your hooks.</p>
+  </div>
+
+  <div class="col-6">
+    <%= form_for @changeset, "/app/new", [class: "create-app-form"], fn f -> %>
+
+      <div class="form-group">
+        <%= input f, :name, using: :text_input , placeholder: "App name" %>
+        <%= error_tag f, :name %>
+      </div>
+
+      <div class="form-group">
+        <%= input f, :url, using: :text_input, placeholder: "App url" %>
+        <%= error_tag f, :url %>
+      </div>
+
+      <div class="form-group">
+        <%= input f, :description, using: :textarea, placeholder: "App description" %>
+        <%= error_tag f, :description %>
+      </div>
+
+      <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save</button>
+
+    <% end %>
+  </div>
+</div>

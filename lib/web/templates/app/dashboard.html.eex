@@ -1,0 +1,58 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">App</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+  </ol>
+</nav>
+
+
+<div class="row">
+  <div class="col-md-4 offset-md-8">
+    <a href="/app/new" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Create App</a>
+  </div>
+</div>
+</br>
+<div class="row">
+  <div class="col-12">
+    <%= if not Enum.empty?(@apps) do %>
+      <table class="table">
+        <tbody>
+          <%= for app <- @apps do %>
+            <tr>
+              <td>
+                <h3 class="">
+                  <%= app.name %>
+                </h3>
+              </td>
+              <td class="">App Id </br><%= app.app_id %></td>
+              <td class="">
+                <div class="dropdown" >
+                  <button class="btn btn-light pull-right" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/app/<%= app.app_id %>/webhooks"><i class="fa fa-cog"></i> Manage webhooks</a>
+                    <a class="dropdown-item" href="/app/<%= app.app_id %>/subscriptions"><i class="fa fa-eye"></i> Manage subscriptions</a>
+                    <a class="dropdown-item" href="/app/<%= app.app_id %>/logs"><i class="fa fa-history"></i> View logs</a>
+                  </div>
+                </div>
+                <a href="/app/<%= app.app_id%>/details" style="margin-right:15px;" class="btn btn-dark pull-right">Details</a>
+              </td>
+
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <%= else %>
+
+      <div class="ui placeholder segment">
+        <div class="alert alert-warning text-center ui icon header">
+          <i class="fa fa-exclamation-triangle"></i>
+          No Apps have been created yet.
+        </div>
+      </div>
+      <%= end %>
+
+  </div>
+</div>
+

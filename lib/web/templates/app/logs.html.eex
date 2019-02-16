@@ -1,0 +1,83 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/dashboard">App</a></li>
+    <li class="breadcrumb-item"><%= @id %></li>
+    <li class="breadcrumb-item active" aria-current="page">Logs</li>
+  </ol>
+</nav>
+
+
+<div class="row">
+  <div class="col-12">
+    <%= if not Enum.empty?(@logs) do %>
+       <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr><th>ID</th>
+            <th>Object ID</th>
+            <th>Webhook ID</th>
+            <th>URL</th>
+            <th>Status</th>
+            <th>Response Time</th>
+            <th>Retries</th>
+            <th class="sorted ascending">Logged at</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for log <- @logs do %>
+            <tr class="
+              <%= if div(log.response_status, 100) != 2 do %>
+                table-warning
+              <% end %>
+              ">
+              <td >#<%= log.id %></td>
+              <td ><a  target="_blank" href="https://bithomp.com/explorer/<%= log.object_id %>"><%= String.slice(log.object_id,  0, 15) %>...</a></td>
+              <td ><%= log.webhook.hook_id %></td>
+              <td ><%= log.webhook.url %></td>
+              <td>
+                <%= if div(log.response_status, 100) != 2 do %>
+                  <i class="fa-exclamation-circle  fa">&nbsp<%= log.response_status %>
+                  <% else %>
+                    <span class="text-success"><%= log.response_status %></span>
+                <% end %>
+              </td>
+              <td ><%= log.response_time / 1000000%> sec</td>
+              <td ><%= log.retry_count %></td>
+              <td ><%= log.inserted_at %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+      <%= if @count > 20 do %>
+        <nav aria-label="navigation">
+          <ul class="pagination  justify-content-center">
+            <li class="page-item">
+              <a href="
+                <%= if (@page == 1) do %>
+                  #
+                  <%= else %>
+                  /app/<%= @id %>/logs/<%= @page - 1 %>
+                  <%= end %>" class="page-link">Previous
+              </a>
+            </li>
+
+            <li class="page-item <%= if ( ( @page * 20 ) >= @count ) do %>disabled<%= end %>">
+                <a href="/app/<%= @id %>/logs/<%= @page + 1 %>"  class="page-link">Next</a>
+            </li>
+          </ul>
+        </nav>
+      <% end %>
+    <%= else %>
+
+      <div class="ui placeholder segment">
+        <div class="ui icon header">
+          <i class="dont icon"></i>
+          No logs have been created yet
+        </div>
+      </div>
+    <%= end %>
+
+  </div>
+</div>
+

@@ -1,0 +1,36 @@
+<div class="col">
+  <section class="jumbotron text-center">
+    <h1 class="jumbotron-heading mb-2">XRPL Transaction Webhooks</h1>
+    <h3 class="mb-5">Get notified with a HTTP POST request on payments 🎉</h3>
+    <p class="lead text-muted">
+      Setup an App and gerenate your API keys to continue.
+    </p>
+    <p class="lead text-muted">
+    <a href="/app/new" class="btn btn-success">Continue <i class="fa fa-arrow-right"></i></a>
+    </p>
+  </section>
+
+  <h4 class="">Getting started</h4>
+  <hr>
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">1 - Create App</h5>
+        <p class="card-text">Integrating with nearly all of the XRPL Webhook APIs and register Webhooks and Subscriptions requires the creation of a Hook app and the generation of consumer keys and access tokens.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">2 - Create Webhook</h5>
+        <p class="card-text">This is the URL all HTTP Posts will be send to, for subscribe an XRPL account creating an Webhook for your app is required. </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">3 - Subscribe Account</h5>
+        <p class="card-text">In the end all you need is Subscribe your desire XRPL account and you will get notified by HTTP Post on your Webhook URL's</p>
+      </div>
+    </div>
+  </div>
+
+</div>
