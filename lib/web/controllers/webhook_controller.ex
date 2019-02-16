@@ -42,7 +42,7 @@ defmodule EspyWeb.WebhookController do
   def trigger(conn, %{"id" => id, "webhook_id" => webhook_id}) do
     user_id = conn.assigns.current_user.id
     app = App.get!(id, user_id)
-    webhook = Webhook.get!(webhook_id, user_id)
+    webhook = Webhook.get!(webhook_id, app.id)
     case Hammer.check_rate("webhook_trigger:#{user_id}", 60_000, 5) do
       {:allow, _count} ->
         tx = Mock.transaction
