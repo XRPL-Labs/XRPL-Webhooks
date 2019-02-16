@@ -58,7 +58,7 @@
 		    <i class="fa fa-ellipsis-v"></i>
 		  </button>
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-		    <a class="dropdown-item test" href="<%= webhook_path(@conn, :test, @app.app_id, webhook.hook_id) %>"><i class="fa fa-bolt"></i>&nbsp&nbspManual Trigger</a>
+		    <a class="dropdown-item trigger" href="<%= webhook_path(@conn, :trigger, @app.app_id, webhook.hook_id) %>"><i class="fa fa-bolt"></i>&nbsp&nbspManual Trigger</a>
 		    <a class="dropdown-item delete" href="<%= webhook_path(@conn, :delete, @app.app_id, webhook.hook_id) %>"><i class="fa fa-trash"></i>&nbsp&nbspDelete</a>
 		  </div>
 		</div>
