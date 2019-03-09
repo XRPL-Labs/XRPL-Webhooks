@@ -3,7 +3,7 @@
     <h1 class="jumbotron-heading mb-2">XRPL Transaction Webhooks</h1>
     <h3 class="mb-5">Get notified with a HTTP POST request on payments 🎉</h3>
     <p class="lead text-muted">
-      Setup an App and gerenate your API keys to continue.
+      Setup an App and generate your API keys to continue.
     </p>
     <p class="lead text-muted">
     <a href="/app/new" class="btn btn-success">Continue <i class="fa fa-arrow-right"></i></a>
