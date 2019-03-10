@@ -54,7 +54,7 @@ defmodule Espy.Watcher.Handler do
     case get_availables tx do
       [] -> true
       app_ids ->
-        case get_webhooks app_ids do
+        case get_webhooks Enum.uniq(app_ids) do
           [] -> :no_webhook
             # Cache.delete(get_in(tx, ["transaction","Account"]))
             # Cache.delete(get_in(tx, ["transaction","Destination"]))
