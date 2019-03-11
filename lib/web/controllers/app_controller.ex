@@ -35,8 +35,8 @@ defmodule EspyWeb.AppController do
     # TODO: need to write cleaner code
     if App.check_limit(user.id) do
       conn
-        |> put_flash(:error, "Private app limit reached, you cannot create more apps.")
-        |> redirect(to: "/app/dashboard")
+      |> put_flash(:error, "Private app limit reached, you cannot create more apps.")
+      |> redirect(to: "/app/dashboard")
     else
       params = Map.put(params, "user_id", user.id)
       case App.create(params) do
