@@ -30,7 +30,6 @@ defmodule Espy.Gateway.App do
     |> validate_length(:name, min: 3, max: 16)
     |> validate_length(:description, min: 10, max: 64)
     |> validate_url()
-    |> check_limit()
     |> put_app_id()
     |> put_api_key()
     |> put_api_secret()

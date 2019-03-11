@@ -74,7 +74,7 @@
     <div class="container" id="content" >
       <%= if get_flash(@conn, :info) do %>
         <div class="alert alert-info alert-dismissible fade show" role="alert">
-          <%= inspect get_flash(@conn, :info) %>
+          <%= get_flash(@conn, :info) %>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -82,7 +82,7 @@
       <% end %>
       <%= if get_flash(@conn, :error) do %>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= inspect get_flash(@conn, :error) %>
+          <%= get_flash(@conn, :error) %>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
