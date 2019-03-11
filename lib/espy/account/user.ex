@@ -12,6 +12,7 @@ defmodule Espy.Account.User do
     field :is_active, :boolean, default: true
     field :name, :string
     field :avatar, :string
+    field :level, :string
     timestamps()
   end
 

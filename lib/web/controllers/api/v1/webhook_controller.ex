@@ -14,16 +14,25 @@ defmodule EspyWeb.Api.WebhookController do
   end
 
   def create(conn, %{"url" => url}) do
-    app_id = conn.assigns.app.id
-    params = %{app_id: app_id, url: url, deleted: false}
-    case Webhook.create(params) do
-      {:ok, hook} -> json conn, %{success: true, webhook_id: hook.hook_id}
-      {:error, %Ecto.Changeset{} = changeset } ->
+    app = conn.assigns.app
+
+
+    case Webhook.can_add(app) do
+      :can_add -> 
+        params = %{app_id: app.id, url: url, deleted: false}
+        case Webhook.create(params) do
+          {:ok, hook} -> json conn, %{success: true, webhook_id: hook.hook_id}
+          {:error, %Ecto.Changeset{} = changeset } ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> put_view(EspyWeb.ErrorView)
+            |> render("error.json", changeset: changeset)
+        end
+      error ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(EspyWeb.ErrorView)
-        |> render("error.json", changeset: changeset)
-   end
+        |> json(%{success: false, error: error })
+    end
   end
 
   api :GET, "/api/v1/webhooks" do
@@ -46,24 +55,31 @@ defmodule EspyWeb.Api.WebhookController do
   end
 
 
-  def delete(conn, %{"webhook_id" => webhook_id}) do
-    app_id = conn.assigns.app.id
-    params = %{app_id: app_id, hook_id: webhook_id}
-    case Webhook.delete(params) do
-      {:ok, struct} ->
-        conn
-        |> put_status(:no_content)
-        |> json(%{success: true})
-      {:error, :not_found} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{success: false})
-      {:error, %Ecto.Changeset{} = changeset } ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EspyWeb.ErrorView)
-        |> render("error.json", changeset: changeset)
-    end
+	def delete(conn, %{"webhook_id" => webhook_id}) do
+		app = conn.assigns.app
+		case Webhook.can_delete(app) do
+			:can_delete ->
+				params = %{app_id: app.id, hook_id: webhook_id}
+				case Webhook.delete(params) do
+					{:ok, struct} ->
+						conn
+						|> put_status(:no_content)
+						|> json(%{success: true})
+					{:error, :not_found} ->
+						conn
+						|> put_status(:not_found)
+						|> json(%{success: false})
+					{:error, %Ecto.Changeset{} = changeset } ->
+						conn
+						|> put_status(:unprocessable_entity)
+						|> put_view(EspyWeb.ErrorView)
+						|> render("error.json", changeset: changeset)
+				end
+			error ->
+				conn
+				|> put_status(:unprocessable_entity)
+				|> json(%{success: false, error: error })
+		end
   end
 
 end

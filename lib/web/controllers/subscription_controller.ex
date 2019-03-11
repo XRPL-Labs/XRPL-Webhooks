@@ -14,23 +14,32 @@ defmodule EspyWeb.SubscriptionController do
   end
 
   def create(conn, %{"subscription" => %{"address" => address}} = params) do
-    user_id = conn.assigns.current_user.id
-    app = App.get!(Map.get(params, "id"), user_id)
-    subscription = %{app_id: app.id, address: address}
-    case Subscription.create(subscription) do
-      {:ok, _subscription} ->
-        # set new subscription to Watcher Cache
-        Cache.set(address, app.id)
-        # return response
-        conn
-        |> put_flash(:info, "Subscription added successfully")
-        |> redirect(to: subscription_path(conn, :list, app.app_id ))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-        conn
-        |> put_flash(:error, "Please enter a valid Ripple Address")
-        |> redirect(to: subscription_path(conn, :list, app.app_id ))
+    user = conn.assigns.current_user
+    app = App.get!(Map.get(params, "id"), user.id)
+
+
+    case Subscription.can_add(app) do
+      :can_add -> subscription = %{app_id: app.id, address: address}
+	  case Subscription.create(subscription) do
+	    {:ok, _subscription} ->
+	      # set new subscription to Watcher Cache
+	      Cache.set(address, app.id)
+	      # return response
+	      conn
+	      |> put_flash(:info, "Subscription added successfully")
+	      |> redirect(to: subscription_path(conn, :list, app.app_id ))
+	    {:error, %Ecto.Changeset{} = changeset} ->
+	      IO.inspect(changeset)
+	      conn
+	      |> put_flash(:error, "Please enter a valid Ripple Address")
+	      |> redirect(to: subscription_path(conn, :list, app.app_id ))
+	  end
+      error ->
+	  conn
+	    |> put_flash(:error, error)
+	    |> redirect(to: subscription_path(conn, :list, app.app_id ))
     end
+
   end
 
   def delete(conn, %{"id" => id, "subscription_id" => subscription_id}) do

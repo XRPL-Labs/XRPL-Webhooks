@@ -4,7 +4,7 @@ defmodule Espy.Gateway.Webhook do
   import Ecto.Query, warn: false
 
   alias Espy.Repo
-  alias Espy.Gateway.Webhook
+  alias Espy.Gateway.{ Webhook, Subscription }
 
   schema "webhooks" do
     field :deactivated, :boolean, default: false
@@ -46,6 +46,32 @@ defmodule Espy.Gateway.Webhook do
               {:error, _} -> add_error(changeset, :url, "invalid host")
             end
         end
+    end
+  end
+
+  def can_add(app) do
+    webhook_count = Webhook
+                    |> where(app_id: ^app.id)
+                    |> where(deleted: false)
+                    |> Repo.aggregate(:count, :id)
+    case webhook_count >= 2 and app.user.level != "pro" do
+      true -> "Webhooks limit reached, you cannot add more webhook."
+      false -> :can_add
+    end
+  end
+
+
+  def can_delete(app) do
+    webhook_count = Webhook
+                    |> where(app_id: ^app.id)
+                    |> where(deleted: false)
+                    |> Repo.aggregate(:count, :id)
+    subscription_count = Subscription
+                    |> where(app_id: ^app.id)
+                    |> Repo.aggregate(:count, :id)
+    case webhook_count == 1 and subscription_count > 0 do
+      true -> "You already have some subscriptions on this app, please remove them and try again!"
+      false -> :can_delete
     end
   end
 

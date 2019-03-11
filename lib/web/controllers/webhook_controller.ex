@@ -18,16 +18,24 @@ defmodule EspyWeb.WebhookController do
   def create(conn, %{"webhook" => %{"url" => url}} = params) do
     user_id = conn.assigns.current_user.id
     app = App.get!(Map.get(params, "id"), user_id)
-    webhook = %{app_id: app.id, url: url, deleted: false}
-    case Webhook.create(webhook) do
-      {:ok, _webhook} ->
+
+    case Webhook.can_add(app) do
+      :can_add ->
+        webhook = %{app_id: app.id, url: url, deleted: false}
+        case Webhook.create(webhook) do
+          {:ok, _webhook} ->
+            conn
+            |> put_flash(:info, "Webhook created successfully")
+            |> redirect(to: webhook_path(conn, :list, app.app_id ))
+          {:error, %Ecto.Changeset{} = changeset} ->
+            IO.inspect(changeset)
+            conn
+            |> put_flash(:error, "Please enter a valid webhook URL")
+            |> redirect(to: webhook_path(conn, :list, app.app_id ))
+        end
+      error ->
         conn
-        |> put_flash(:info, "Webhook created successfully")
-        |> redirect(to: webhook_path(conn, :list, app.app_id ))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-        conn
-        |> put_flash(:error, "Please enter a valid webhook URL")
+        |> put_flash(:error, error)
         |> redirect(to: webhook_path(conn, :list, app.app_id ))
     end
   end
@@ -35,8 +43,17 @@ defmodule EspyWeb.WebhookController do
   def delete(conn, %{"id" => id, "webhook_id" => webhook_id}) do
     user_id = conn.assigns.current_user.id
     app = App.get!(id, user_id)
-    Webhook.delete(%{"hook_id": webhook_id, "app_id": app.id})
-    redirect(conn, to: webhook_path(conn, :list, app.app_id))
+
+    case Webhook.can_delete(app) do
+      :can_delete ->
+        Webhook.delete(%{"hook_id": webhook_id, "app_id": app.id})
+        redirect(conn, to: webhook_path(conn, :list, app.app_id))
+      error ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: webhook_path(conn, :list, app.app_id ))
+    end
+
   end
 
   def trigger(conn, %{"id" => id, "webhook_id" => webhook_id}) do
@@ -47,10 +64,10 @@ defmodule EspyWeb.WebhookController do
       {:allow, _count} ->
         tx = Mock.transaction
         Task.Supervisor.start_child(
-            Espy.Supervisor.HTTPC,
-            HTTPC,
-            :call,
-            [%{ url: webhook.url, body: tx ,callback: nil}]
+          Espy.Supervisor.HTTPC,
+          HTTPC,
+          :call,
+          [%{ url: webhook.url, body: tx ,callback: nil}]
         )
         conn
         |> put_flash(:info, "A sample POST request just sent to the webhook URL.")

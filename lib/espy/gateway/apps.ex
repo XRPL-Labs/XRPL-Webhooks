@@ -5,6 +5,7 @@ defmodule Espy.Gateway.App do
 
   alias Espy.Repo
   alias Espy.Gateway.App
+  alias Espy.Account
   alias Espy.Account.{User}
 
   schema "apps" do
@@ -29,6 +30,7 @@ defmodule Espy.Gateway.App do
     |> validate_length(:name, min: 3, max: 16)
     |> validate_length(:description, min: 10, max: 64)
     |> validate_url()
+    |> check_limit()
     |> put_app_id()
     |> put_api_key()
     |> put_api_secret()
@@ -68,6 +70,16 @@ defmodule Espy.Gateway.App do
   end
 
 
+  def check_limit(user_id) do
+    apps_count = App
+    |> where(user_id: ^user_id)
+    |> where(deleted: false)
+    |> Repo.aggregate(:count, :id)
+
+    user = Account.get_user!(user_id)
+
+    apps_count >= 1 and user.level != 'pro'
+  end
 
   def put_app_id(changeset) do
     change(changeset, app_id:  Enum.random(1000000..99999999))
@@ -87,16 +99,16 @@ defmodule Espy.Gateway.App do
   end
 
   def get!(id, user_id) do
-    Repo.get_by!(App, [ app_id: id, user_id: user_id, deleted: false])
+    Repo.get_by!(App, [ app_id: id, user_id: user_id, deleted: false]) |> Repo.preload(:user)
   end
 
   def get(id) do
-    Repo.get_by(App, [ id: id, deleted: false, active: true])
+    Repo.get_by(App, [ id: id, deleted: false, active: true]) |> Repo.preload(:user)
   end
 
 
   def get_by_token(api_key, api_secret) do
-    Repo.get_by(App, [ api_key: api_key, api_secret: api_secret])
+    Repo.get_by(App, [ api_key: api_key, api_secret: api_secret]) |> Repo.preload(:user)
   end
 
   def regenerate(id, user_id) do

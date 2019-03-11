@@ -30,17 +30,24 @@ defmodule EspyWeb.AppController do
   end
 
   def create(conn, %{"app" => params}) do
-    user_id = conn.assigns.current_user.id
-    params = Map.put(params, "user_id", user_id)
-    case App.create(params) do
-      {:ok, _app} ->
-        conn
-        |> put_flash(:info, "App created successfully")
+    user = conn.assigns.current_user
+    # check for user app limit
+    # TODO: need to write cleaner code
+    if App.check_limit(user.id) do
+      conn
+        |> put_flash(:error, "Private app limit reached, you cannot create more apps.")
         |> redirect(to: "/app/dashboard")
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-        conn
-        |> render("create_app.html", changeset: changeset)
+    else
+      params = Map.put(params, "user_id", user.id)
+      case App.create(params) do
+        {:ok, _app} ->
+          conn
+          |> put_flash(:info, "App created successfully")
+          |> redirect(to: "/app/dashboard")
+        {:error, %Ecto.Changeset{} = changeset} ->
+          conn
+          |> render("create_app.html", changeset: changeset)
+      end
     end
   end
 

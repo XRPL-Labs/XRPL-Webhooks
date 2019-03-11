@@ -14,29 +14,29 @@ defmodule EspyWeb.Api.SubscriptionController do
   end
 
   def create(conn, %{"address" => address}) do
-    app_id = conn.assigns.app.id
+    app = conn.assigns.app
 
-    # Check if app have webhook set
-    if Webhook.count_by_app(app_id) == 0 do
-      conn
-      |> put_status(:unprocessable_entity)
-      |> json(%{success: false, error: "App has no webhook, please create one and try again." })
+    case Subscription.can_add(app) do
+      :can_add ->
+	params = %{app_id: app.id, address: address}
+	case Subscription.create(params) do
+	  {:ok, subscription} ->
+	    # set new subscription to Watcher Cache
+	    Cache.set(address, app.id)
+	    # return response
+	    json conn, %{success: true, subscription_id: subscription.subscription_id}
+	  {:error, %Ecto.Changeset{} = changeset } ->
+	    conn
+	    |> put_status(:unprocessable_entity)
+	    |> put_view(EspyWeb.ErrorView)
+	    |> render("error.json", changeset: changeset)
+	end
+      error ->
+	conn
+	|> put_status(:unprocessable_entity)
+	|> json(%{success: false, error: error })
     end
 
-
-    params = %{app_id: app_id, address: address}
-    case Subscription.create(params) do
-      {:ok, subscription} ->
-        # set new subscription to Watcher Cache
-        Cache.set(address, app_id)
-        # return response
-        json conn, %{success: true, subscription_id: subscription.subscription_id}
-      {:error, %Ecto.Changeset{} = changeset } ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EspyWeb.ErrorView)
-        |> render("error.json", changeset: changeset)
-   end
   end
 
   api :GET, "/api/v1/subscriptions" do
@@ -63,21 +63,21 @@ defmodule EspyWeb.Api.SubscriptionController do
     params = %{app_id: app_id, subscription_id: subscription_id}
     case Subscription.delete(params) do
       {:ok, struct} ->
-        # Remove address from cache
-        Cache.delete(struct.address)
-        # Response
-        conn
-        |> put_status(:no_content)
-        |> json(%{success: true})
+	# Remove address from cache
+	Cache.delete(struct.address)
+	# Response
+	conn
+	|> put_status(:no_content)
+	|> json(%{success: true})
       {:error, :not_found} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{success: false})
+	conn
+	|> put_status(:not_found)
+	|> json(%{success: false})
       {:error, %Ecto.Changeset{} = changeset } ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EspyWeb.ErrorView)
-        |> render("error.json", changeset: changeset)
+	conn
+	|> put_status(:unprocessable_entity)
+	|> put_view(EspyWeb.ErrorView)
+	|> render("error.json", changeset: changeset)
     end
   end
 

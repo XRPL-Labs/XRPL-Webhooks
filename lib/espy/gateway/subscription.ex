@@ -4,7 +4,7 @@ defmodule Espy.Gateway.Subscription do
   import Ecto.Query, warn: false
 
   alias Espy.Repo
-  alias Espy.Gateway.{ App, Subscription }
+  alias Espy.Gateway.{Webhook, Subscription, App}
 
   schema "subscriptions" do
     field :subscription_id, :integer
@@ -33,6 +33,20 @@ defmodule Espy.Gateway.Subscription do
     change(changeset, subscription_id:  Enum.random(1000000..99999999))
   end
 
+  def can_add(app) do
+    case Webhook.count_by_app(app.id) == 0 do
+      true -> "App has no webhook, please create one and try again."
+      false ->
+	subscription_count = Subscription
+		      |> where(app_id: ^app.id)
+		      |> Repo.aggregate(:count, :id)
+	case subscription_count >= 5 and app.user.level != "pro" do
+	  true -> "Subscriptions limit reached, you cannot add more subscription."
+	  false -> :can_add
+	end
+    end
+  end
+
   def validate_address(changeset) do
     case get_field(changeset, :address) do
       nil -> changeset
@@ -53,21 +67,21 @@ defmodule Espy.Gateway.Subscription do
     |> Repo.insert_or_update
   end
 
- def list_by_app(app_id) do
+  def list_by_app(app_id) do
     Repo.all(from a in Subscription, where: a.app_id == ^app_id, order_by: [desc: a.id])
- end
+  end
 
- def delete(params) do
-   case Repo.get_by(Subscription, params) do
-     nil -> {:error, :not_found}
-     subscription -> Repo.delete subscription
-   end
- end
+  def delete(params) do
+    case Repo.get_by(Subscription, params) do
+      nil -> {:error, :not_found}
+      subscription -> Repo.delete subscription
+    end
+  end
 
 
- def change(%Subscription{} = subscription) do
+  def change(%Subscription{} = subscription) do
     Subscription.changeset(subscription, %{})
- end
+  end
 
 
 end
