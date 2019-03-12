@@ -64,7 +64,7 @@ defmodule EspyWeb.Api.SubscriptionController do
     case Subscription.delete(params) do
       {:ok, struct} ->
 	# Remove address from cache
-	Cache.delete(struct.address)
+	Cache.delete(struct.address, app_id)
 	# Response
 	conn
 	|> put_status(:no_content)

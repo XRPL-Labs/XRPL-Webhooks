@@ -99,6 +99,11 @@ defmodule Espy.Gateway.Webhook do
     Repo.all(from a in Webhook, where: a.app_id == ^app_id,  where: a.deleted == false, where: a.deactivated == false, order_by: [desc: a.id])
   end
 
+  def list_by_apps(app_ids) do
+    Repo.all(from a in Webhook, where: a.app_id in ^app_ids,  where: a.deleted == false, where: a.deactivated == false, order_by: [desc: a.id])
+  end
+
+
   def count_by_app(app_id) do
     Repo.one(from a in Webhook, where: a.app_id == ^app_id,  where: a.deleted == false, select: count(a.id))
   end

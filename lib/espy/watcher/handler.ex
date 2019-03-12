@@ -23,14 +23,18 @@ defmodule Espy.Watcher.Handler do
   defp check(address) do
     case Cache.fetch(address) do
       :not_found -> :not_found
-      app_id ->
-        case App.get(app_id) do
-          nil ->
-            # App is not active then remove the Subsciption from cache
-            Cache.delete(address)
-            :not_found
-          app -> app.id
-        end
+      app_ids ->
+        Enum.reduce(app_ids, [],
+          fn v, n ->
+            case App.get(v) do
+              nil ->
+                # App is not active then remove the Subsciption from cache
+                Cache.delete(address, v)
+                n
+              app -> n ++ [app.id]
+            end
+          end
+        )
     end
   end
 
@@ -39,14 +43,10 @@ defmodule Espy.Watcher.Handler do
       fn v, n ->
         case check(v) do
           :not_found -> n
-          app_id -> n ++ [app_id]
+          app_ids -> n ++ app_ids
         end
       end
     )
-  end
-
-  def get_webhooks(apps) do
-    Enum.reduce(apps, [] ,fn v, n -> n ++ Webhook.list_by_app v end)
   end
 
   def handle(tx) do
@@ -54,7 +54,7 @@ defmodule Espy.Watcher.Handler do
     case get_availables tx do
       [] -> true
       app_ids ->
-        case get_webhooks Enum.uniq(app_ids) do
+        case Webhook.list_by_apps Enum.uniq(app_ids) do
           [] -> :no_webhook
             # Cache.delete(get_in(tx, ["transaction","Account"]))
             # Cache.delete(get_in(tx, ["transaction","Destination"]))

@@ -47,7 +47,7 @@ defmodule EspyWeb.SubscriptionController do
     case Subscription.delete(%{subscription_id: subscription_id, app_id: app.id}) do
       {:ok, struct} ->
 	# Remove address from cache
-	Cache.delete(struct.address)
+	Cache.delete(struct.address, app.id)
       _ -> true
     end
     redirect(conn, to: subscription_path(conn, :list, app.app_id))

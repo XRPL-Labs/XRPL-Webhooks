@@ -77,7 +77,7 @@ defmodule Espy.Gateway.App do
 
     user = Account.get_user!(user_id)
 
-    apps_count >= 1 and user.level != 'pro'
+    apps_count >= 1 and user.level != "pro"
   end
 
   def put_app_id(changeset) do
