@@ -54,7 +54,7 @@ defmodule Espy.Watcher.Cache do
     %{ets_table_name: ets_table_name} = state
     case :ets.lookup(ets_table_name, slug) do
       [] ->
-        true = :ets.insert(ets_table_name, {slug, value})
+        true = :ets.insert(ets_table_name, {slug, [value]})
       [{_slug, current}]  ->
         true = :ets.insert(ets_table_name, {slug, [ value | current ] })
     end
