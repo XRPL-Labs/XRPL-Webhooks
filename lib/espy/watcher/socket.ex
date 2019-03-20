@@ -100,25 +100,20 @@ defmodule Espy.Watcher.Socket do
 
   defp cancel_timer(ref) do
     case Process.cancel_timer(ref) do
-    i when is_integer(i) -> :ok
-    false ->
-      receive do
-        :timeout -> :ok
-      after
-        0 -> :ok
-      end
+      i when is_integer(i) -> :ok
+      false ->
+        receive do
+          :timeout -> :ok
+        after
+          0 -> :ok
+        end
     end
   end
 
   def subscribe_to_streams(pid) do
-    try do
-      Logger.info("Sending subscribe request: streams=#{@streams}", ansi_color: :light_blue)
-      data = %{command: @command, streams: @streams} |> Poison.encode!()
-      Task.start fn -> WebSockex.send_frame(pid, {:text, data}) end
-    rescue
-      e -> IO.inspect e
-    end
+    Logger.info("Sending subscribe request: streams=#{@streams}", ansi_color: :light_blue)
+    data = %{command: @command, streams: @streams} |> Poison.encode!()
+    Task.start fn -> WebSockex.send_frame(pid, {:text, data}) end
   end
-
 
 end
