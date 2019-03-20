@@ -13,11 +13,8 @@ defmodule Espy.Watcher.Socket do
   @only_handle ["Payment"]
 
   def start_link(_opts \\ []) do
-    {:ok, pid } = WebSockex.start_link(@url, __MODULE__, %{},[name: __MODULE__])
-    subscribe_to_streams(pid)
-    {:ok, pid}
+    WebSockex.start_link(@url, __MODULE__, %{},[name: __MODULE__])
   end
-
 
   defp filter_transaction(parsed) do
     try do
@@ -65,6 +62,7 @@ defmodule Espy.Watcher.Socket do
 
   def handle_connect(_conn, state) do
     Logger.info "Connected to ripple server #{String.upcase(@url)}", ansi_color: :green
+    subscribe_to_streams self()
     timer_ref = Process.send_after(self(), :timeout, 20000)
     {:ok, Map.put(state, :timer_ref, timer_ref)}
   end
@@ -91,6 +89,15 @@ defmodule Espy.Watcher.Socket do
     {:reconnect, state}
   end
 
+  def handle_disconnect(disconnect_map, state) do
+    super(disconnect_map, state)
+  end
+
+
+  def terminate(reason, state) do
+    Logger.info("Socket terminated with: #{inspect reason}")
+  end
+
   defp cancel_timer(ref) do
     case Process.cancel_timer(ref) do
     i when is_integer(i) -> :ok
@@ -104,9 +111,13 @@ defmodule Espy.Watcher.Socket do
   end
 
   def subscribe_to_streams(pid) do
-    Logger.info("Sending subscribe request: streams=#{@streams}", ansi_color: :light_blue)
-    data = %{command: @command, streams: @streams} |> Poison.encode!()
-    WebSockex.send_frame(pid, {:text, data})
+    try do
+      Logger.info("Sending subscribe request: streams=#{@streams}", ansi_color: :light_blue)
+      data = %{command: @command, streams: @streams} |> Poison.encode!()
+      Task.start fn -> WebSockex.send_frame(pid, {:text, data}) end
+    rescue
+      e -> IO.inspect e
+    end
   end
 
 
