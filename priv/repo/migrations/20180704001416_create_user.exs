@@ -10,7 +10,7 @@ defmodule EspyWeb.Repo.Migrations.CreateUser do
       add :is_active, :boolean, default: true, null: false
       add :email, :string
       add :avatar, :string
-      add :level, :string, default: 'free'
+      add :level, :string, default: "free"
 
       timestamps()
     end
