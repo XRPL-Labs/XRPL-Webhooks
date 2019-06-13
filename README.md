@@ -1,12 +1,12 @@
-# XRPL Webhook
+# CSCL Webhook
 
-Register Apps and add XRPL account subscriptions + Webhook endpoint URL's. The service will watch the XRP ledger for `payment` transactions, and HTTP POST Webhooks will be sent to the subscribed apps + endpoints.
+Register Apps and add CSCL account subscriptions + Webhook endpoint URL's. The service will watch the CSC ledger for `payment` transactions, and HTTP POST Webhooks will be sent to the subscribed apps + endpoints.
 
 ## Start & run manually
 
   * Install dependencies with `mix deps.get`
   * Check your database setting at `config/dev.exs` and match your postgresql credential
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
+  * Create and migrate your databmixase with `mix ecto.create && mix ecto.migrate`
   * Install Node.js dependencies with `cd assets && npm install`
   * Add env variables to your environment
     * `GITHUB_CLIENT_ID` and  `GITHUB_CLIENT_SECRET` Github Sign-in

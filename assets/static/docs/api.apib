@@ -1,7 +1,7 @@
 FORMAT: 1A
-HOST: https://webhook.xrpayments.co
+HOST: https://webhook.casinocoin.services
 
-# XRPL Webhook API
+# CSCL Webhook API
 API requires authorization. All requests must have valid
 `x-api-key` and `x-api-secret`.
 
@@ -36,7 +36,7 @@ Subscribes the provided app all events for the provided address for all transact
 
 + Parameters
 
-    + address (string, required) - Valid XRP address
+    + address (string, required) - Valid CSC address
 
 + Request 200 (application/json; charset=utf-8)
 
@@ -86,7 +86,7 @@ Subscribes the provided app all events for the provided address for all transact
 
     + Body
 
-            {"errors":{"address":["invalid ripple address"]}}
+            {"errors":{"address":["invalid casinocoin address"]}}
 
 ## /api/v1/subscriptions/{subscription_id}
 

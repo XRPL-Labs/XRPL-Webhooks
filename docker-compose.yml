@@ -1,7 +1,7 @@
 version: '2.1'
 
 networks:
-  xrpl-hooks-bridge:
+  cscl-hooks-bridge:
     driver: bridge
 
 services:
@@ -9,11 +9,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: xrplwebhook
+    image: csclwebhook
     restart: always
-    container_name: xrplwebhook
+    container_name: csclwebhook
     networks:
-      - xrpl-hooks-bridge
+      - cscl-hooks-bridge
     volumes:
       - ./lib/web/templates:/usr/src/app/lib/web/templates
     ports:
@@ -21,13 +21,13 @@ services:
     links:
       - postgres
     environment:
-      - PGSQL_DEV_DATABASE=xrpllabsdev
+      - PGSQL_DEV_DATABASE=csclservicesdev
       - PGSQL_DEV_USERNAME=postgres
-      - PGSQL_DEV_PASSWORD=xrpllabswebhook
+      - PGSQL_DEV_PASSWORD=csclserviceswebhook
       - PGSQL_DEV_HOSTNAME=postgres
-      - PGSQL_TEST_DATABASE=xrpllabstst
+      - PGSQL_TEST_DATABASE=csclservicestst
       - PGSQL_TEST_USERNAME=postgres
-      - PGSQL_TEST_PASSWORD=xrpllabswebhook
+      - PGSQL_TEST_PASSWORD=csclserviceswebhook
       - PGSQL_TEST_HOSTNAME=postgres
       - GITHUB_CLIENT_ID=XXXX
       - GITHUB_CLIENT_SECRET=XXXX
@@ -37,7 +37,7 @@ services:
     image: postgres:alpine
     restart: always
     networks:
-      - xrpl-hooks-bridge
-    container_name: xrplwebhook_db
+      - cscl-hooks-bridge
+    container_name: csclwebhook_db
     environment:
-      - POSTGRES_PASSWORD=xrpllabswebhook
+      - POSTGRES_PASSWORD=csclserviceswebhook

@@ -52,7 +52,7 @@ defmodule Espy.Gateway.Subscription do
       nil -> changeset
       address ->
 	case address |> Utils.Base58.valid? do
-	  false -> add_error(changeset, :address, "invalid ripple address")
+	  false -> add_error(changeset, :address, "invalid casinocoin address")
 	  true -> changeset
 	end
     end

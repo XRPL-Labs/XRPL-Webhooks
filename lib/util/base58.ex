@@ -12,7 +12,7 @@ defmodule Utils.Base58 do
   """
 
   # Base58 alphabet, without 0,O,l,I
-  @code 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz'
+  @code 'cpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2brdeCg65jkm8oFqi1tuvAxyz'
   @code_0 @code |> List.first
 
   # optimization to avoid browsing code list each time, with this we have O(1)

@@ -1,6 +1,6 @@
 defmodule Espy.Adapter.WebSocket do
   @moduledoc """
-  Ripple WebSocket client.
+  CasinoCoin WebSocket client.
 
   Behind the scenes, this module uses :websocket_client erlang libray.
   """
@@ -25,7 +25,7 @@ defmodule Espy.Adapter.WebSocket do
     quote do
       @behaviour :websocket_client
       @test_net false
-      @url "wss://" <> (@test_net && "s.altnet.rippletest.net:51233" || "s1.ripple.com:443")
+      @url "wss://" <> (@test_net && "wst01.casinocoin.org:4443" || "ws01.casinocoin.org:4443")
       @ping_interval 5_000
 
       ## API

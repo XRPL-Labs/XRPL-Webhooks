@@ -12,7 +12,7 @@
 <div class="row">
   <div class="col-6">
     <h4>New App</h4>
-    <p>To setup Webhook endpoints and monitor XRPL accounts to receive hooks, you'll have to create an App.</p>
+    <p>To setup Webhook endpoints and monitor CSCL accounts to receive hooks, you'll have to create an App.</p>
     <p>After creating the App, you can continue setting up your hooks.</p>
   </div>
 

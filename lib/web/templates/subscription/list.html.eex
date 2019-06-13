@@ -10,14 +10,14 @@
   <div class="col-12">
     <%= form_for @changeset, subscription_path(@conn, :list, @app.app_id ), [class: "ml-auto"], fn f -> %>
 			<h4>Add subscription</h4>
-			<h6>To receive HTTP POST calls when a monitored account receives a payment, you need to subscribe to activity for one or more XRPL accounts.</h6>
+			<h6>To receive HTTP POST calls when a monitored account receives a payment, you need to subscribe to activity for one or more CSCL accounts.</h6>
 			<div class="alert alert-primary" role="alert"><strong>Note:</strong> You must have a <a href="<%= webhook_path(@conn, :list, @app.app_id ) %>">registered webhook config</a> to add address, and you must have whitelisted the callback URLs for your app following the setup instructions.</div>
       <div class="form-row align-items-right">
 			<div class="col-12">
 				<small  class="text-muted">
-					Must be a valid XRPL account address, eg. <code>rXXXXXXX....</code>
+					Must be a valid CSCL account address, eg. <code>rXXXXXXX....</code>
 				</small>
-				<%= input f, :address, using: :text_input , label: [class: "sr-only"], input: [placeholder: "XRPL account address"]%>
+				<%= input f, :address, using: :text_input , label: [class: "sr-only"], input: [placeholder: "CSCL account address"]%>
 				<%= error_tag f, :url %>
 			</div>
 			<div class="col-12 text-right">

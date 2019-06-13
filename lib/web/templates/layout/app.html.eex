@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>XRPL Webhooks</title>
+    <title>CSCL Webhooks</title>
 
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
@@ -15,7 +15,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand <%= active_link(@conn, EspyWeb.PageController) %>" href="<%= page_path(@conn, :index) %>">XRPL Webhooks</a>
+        <a class="navbar-brand <%= active_link(@conn, EspyWeb.PageController) %>" href="<%= page_path(@conn, :index) %>">CSCL Webhooks</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -28,7 +28,7 @@
               <a class="nav-link" target="_blank" href="/docs">API Docs</a>
             </li>
             <li class="nav-item">
-              <a href="https://github.com/XRPL-Labs/XRPL-Webhooks" target="_blank" class="nav-link">Github</a>
+              <a href="https://github.com/wenusch/CSCL-Webhooks" target="_blank" class="nav-link">Github</a>
             </li>
           </ul>
           <ul class="navbar-nav ml-auto">
@@ -96,7 +96,7 @@
     <footer class="footer">
       <div class="container justify-content-center align-items-center">
         <p class="text-muted text-center" style="margin-top:0;margin-bottom:0">
-        © 2019 XRPL Labs &nbsp&nbsp<a target="_blank" href="https://twitter.com/XRPLLabs"><i class="fa fa-twitter"></i></a>
+        © 2019 XRPL Labs &nbsp&nbsp<a target="_blank" href="https://twitter.com/XRPLLabs"><i class="fa fa-twitter"></i></a> and forked by CasinoCoin.Services - &nbsp&nbsp<a target="_blank" href="https://twitter.com/casinocoinbot"><i class="fa fa-twitter"></i></a>
         </p>
       </div>
     </footer>

@@ -30,7 +30,7 @@ defmodule EspyWeb.SubscriptionController do
 	    |> redirect(to: subscription_path(conn, :list, app.app_id ))
 	  {:error, %Ecto.Changeset{} = changeset} ->
 	    conn
-	    |> put_flash(:error, "Please enter a valid Ripple Address")
+	    |> put_flash(:error, "Please enter a valid Casinocoin Address")
 	    |> redirect(to: subscription_path(conn, :list, app.app_id ))
 	end
       error ->

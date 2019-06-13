@@ -10,7 +10,7 @@ defmodule EspyWeb.Api.SubscriptionController do
   api :POST, "/api/v1/subscriptions" do
     title "Subscribes address to app"
     description "Subscribes the provided app all events for the provided address for all transaction types. After activation, all transactions for the requesting address will be sent to the provided webhook id via POST request."
-    parameter :address, :string, [description: "Valid XRP address"]
+    parameter :address, :string, [description: "Valid CSC address"]
   end
 
   def create(conn, %{"address" => address}) do

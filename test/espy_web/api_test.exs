@@ -70,7 +70,7 @@ defmodule EspyWeb.ApiTest do
       |> put_req_header("x-api-key", app1.api_key)
       |> put_req_header("x-api-secret", app1.api_secret)
       |> put_req_header("content-type", "application/json; charset=utf-8")
-      |> post(api_subscription_path(conn, :create), address: "rqAiBkWakRA9Jr5TCahtKrPS23KBYUZhj")
+      |> post(api_subscription_path(conn, :create), address: "cqAiBkWakRA9Jr5TCahtKrPS23KBYUZhj")
       |> BlueBird.ConnLogger.save()
 
     response_create = json_response(conn1, 200)

@@ -1,6 +1,6 @@
 FROM bitwalker/alpine-elixir-phoenix:latest
 
-MAINTAINER Wietse Wind <mail@wietse.com>
+MAINTAINER CasinoCoin Services <me@casinocoin.services>
 
 ENV PORT=4000 MIX_ENV=dev
 

@@ -7,7 +7,7 @@ defmodule Espy.Watcher.Socket do
   alias Espy.Watcher.{Handler}
 
 
-  @url         "wss://s1.ripple.com:443"
+  @url         "wss://ws01.casinocoin.org:4443"
   @command     "subscribe"
   @streams     ["transactions"]
   @only_handle ["Payment"]
@@ -61,7 +61,7 @@ defmodule Espy.Watcher.Socket do
   end
 
   def handle_connect(_conn, state) do
-    Logger.info "Connected to ripple server #{String.upcase(@url)}", ansi_color: :green
+    Logger.info "Connected to casinocoin server #{String.upcase(@url)}", ansi_color: :green
     subscribe_to_streams self()
     timer_ref = Process.send_after(self(), :timeout, 20000)
     {:ok, Map.put(state, :timer_ref, timer_ref)}

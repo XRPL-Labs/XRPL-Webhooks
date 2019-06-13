@@ -12,9 +12,6 @@ if [[ ! -e /installed ]]; then
     
     echo "Run tests"
     mix test
-    # DISABLED, MOTHERF&#@$%%#@$* AGLIO (OR RATHER: PROTAGONIST / GYP)
-    # mix bird.gen.docs
 fi
 
-# Start app, pass through other arguments
 exec mix phx.server "$@"
