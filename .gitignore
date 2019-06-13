@@ -33,3 +33,6 @@ npm-debug.log
 
 # Deliver
 .deliver/releases/
+
+# Jetbrains project settings folder
+.idea
