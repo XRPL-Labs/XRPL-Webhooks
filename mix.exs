@@ -80,7 +80,7 @@ defmodule Espy.Mixfile do
 
   def blue_bird_info do
     [
-      host: "https://webhook.casinocoin.services",
+      host: "https://webhook.casinocoin.eu",
       title: "CSCL Webhook API",
       description: """
                   API requires authorization. All requests must have valid

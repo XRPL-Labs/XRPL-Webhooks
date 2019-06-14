@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :espy, EspyWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "webhook.casinocoin.services"],
+  url: [host: "webhook.casinocoin.eu"],
   server: true,
   root: ".",
   version: Mix.Project.config[:version],
