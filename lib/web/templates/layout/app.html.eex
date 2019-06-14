@@ -96,7 +96,7 @@
     <footer class="footer">
       <div class="container justify-content-center align-items-center">
         <p class="text-muted text-center" style="margin-top:0;margin-bottom:0">
-        © 2019 XRPL Labs &nbsp&nbsp<a target="_blank" href="https://twitter.com/XRPLLabs"><i class="fa fa-twitter"></i></a> and forked by CasinoCoin.Services - &nbsp&nbsp<a target="_blank" href="https://twitter.com/casinocoinbot"><i class="fa fa-twitter"></i></a>
+        © 2019 XRPL Labs &nbsp&nbsp<a target="_blank" href="https://twitter.com/XRPLLabs"><i class="fa fa-twitter"></i></a> and modified by Wenusch - &nbsp&nbsp<a target="_blank" href="https://github.com/wenusch"><i class="fa fa-twitter"></i></a>
         </p>
       </div>
     </footer>

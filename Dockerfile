@@ -1,6 +1,6 @@
 FROM bitwalker/alpine-elixir-phoenix:latest
 
-MAINTAINER CasinoCoin Services <me@casinocoin.services>
+MAINTAINER Massimo Wenusch <massimo@wenusch.nl>
 
 ENV PORT=4000 MIX_ENV=dev
 
