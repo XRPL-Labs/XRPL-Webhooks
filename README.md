@@ -11,6 +11,7 @@ Register Apps and add CSCL account subscriptions + Webhook endpoint URL's. The s
   * Add env variables to your environment
     * `GITHUB_CLIENT_ID` and  `GITHUB_CLIENT_SECRET` Github Sign-in
     * `TWITTER_CONSUMER_KEY` and  `TWITTER_CONSUMER_SECRET` Twitter-Sign-in
+    * `TWITTER_REDIRECT_URI` twitter app callback url (IE: `https://webhook.xrpayments.com/auth/twitter/callback`). This callback url also needs to be set in your twitter app configuration.
   * Start Phoenix endpoint with `mix phx.server`
 
 ## Start & run with Docker Compose
