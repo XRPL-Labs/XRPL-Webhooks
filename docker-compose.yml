@@ -33,6 +33,7 @@ services:
       - GITHUB_CLIENT_SECRET=XXXX
       - TWITTER_CONSUMER_KEY=XXXX
       - TWITTER_CONSUMER_SECRET=XXXX
+      - TWITTER_REDIRECT_URI=https://webhook.example.com/auth/twitter/callback
   postgres:
     image: postgres:alpine
     restart: always
