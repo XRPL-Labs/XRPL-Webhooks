@@ -24,7 +24,7 @@ config :espy, EspyWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :logger, format: "[$level] $message\n",
+config :logger, format: "$time [$level] $metadata $message\n",
                 backends: [{LoggerFileBackend, :error_log}, :console]
 
 config :logger, :error_log,

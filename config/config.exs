@@ -19,8 +19,8 @@ config :espy, EspyWeb.Endpoint,
 
 # Configures Elixir's Logger
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:user_id]
+  format: "$time [$level] $metadata $message\n",
+  metadata: [:app_id, :user_id]
 
 # Configures Blue Bird API Docs
 config :blue_bird,

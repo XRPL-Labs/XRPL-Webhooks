@@ -12,6 +12,7 @@ defmodule EspyWeb.Plugs.WebAuthenticate do
 
     cond do
       current_user = user_id && Repo.get(User, user_id) ->
+        Logger.metadata(user_id: current_user.id)
         conn
         |> assign(:current_user, current_user)
         |> assign(:user_signed_in?, true)

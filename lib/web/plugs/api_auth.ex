@@ -10,6 +10,7 @@ defmodule EspyWeb.Plugs.ApiAuthenticate do
   def call(conn, _) do
     case authorize conn do
       {:ok, app} ->
+        Logger.metadata(app_id: app.id)
         conn
         |> assign(:app, app)
       {:error, message} ->
