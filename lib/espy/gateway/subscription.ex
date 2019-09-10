@@ -52,7 +52,7 @@ defmodule Espy.Gateway.Subscription do
       nil -> changeset
       address ->
 	case address |> Utils.Base58.valid? do
-	  false -> add_error(changeset, :address, "invalid ripple address")
+	  false -> add_error(changeset, :address, "invalid XRP address")
 	  true -> changeset
 	end
     end
@@ -60,11 +60,12 @@ defmodule Espy.Gateway.Subscription do
 
   def create(attrs \\ %{}) do
     case Repo.get_by(Subscription, attrs) do
-      nil  -> %Subscription{} # Subscription not found, we build one
-      object -> object          # Subscription exists, let's use it
+      nil  -> # Subscription not found, we build one
+	%Subscription{}
+	|> Subscription.changeset(attrs)
+	|> Repo.insert()
+      object -> {:exist , object } # Subscription exists
     end
-    |> Subscription.changeset(attrs)
-    |> Repo.insert_or_update
   end
 
   def list_by_app(app_id) do

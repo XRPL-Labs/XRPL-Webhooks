@@ -18,7 +18,7 @@ defmodule EspyWeb.Api.WebhookController do
 
 
     case Webhook.can_add(app) do
-      :can_add -> 
+      :can_add ->
 	params = %{app_id: app.id, url: url, deleted: false}
 	case Webhook.create(params) do
 	  {:ok, hook} -> json conn, %{success: true, webhook_id: hook.hook_id}

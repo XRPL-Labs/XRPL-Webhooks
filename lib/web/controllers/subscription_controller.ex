@@ -21,12 +21,17 @@ defmodule EspyWeb.SubscriptionController do
     case Subscription.can_add(app) do
       :can_add -> subscription = %{app_id: app.id, address: address}
 	case Subscription.create(subscription) do
-	  {:ok, _subscription} ->
+	  {:ok, subscription} ->
 	    # set new subscription to Watcher Cache
 	    Cache.set(address, app.id)
 	    # return response
 	    conn
 	    |> put_flash(:info, "Subscription added successfully")
+	    |> redirect(to: subscription_path(conn, :list, app.app_id ))
+	  {:exist, subscription} ->
+	    # return response
+	    conn
+	    |> put_flash(:info, "Subscription already exist.")
 	    |> redirect(to: subscription_path(conn, :list, app.app_id ))
 	  {:error, %Ecto.Changeset{} = changeset} ->
 	    conn

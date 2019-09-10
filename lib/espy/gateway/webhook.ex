@@ -78,11 +78,12 @@ defmodule Espy.Gateway.Webhook do
 
   def create(attrs \\ %{}) do
     case Repo.get_by(Webhook, attrs) do
-      nil  -> %Webhook{}
-      object -> object
+      nil  ->
+        %Webhook{}
+        |> Webhook.changeset(attrs)
+        |> Repo.insert_or_update
+      object -> {:ok ,object}
     end
-    |> Webhook.changeset(attrs)
-    |> Repo.insert_or_update
   end
 
 

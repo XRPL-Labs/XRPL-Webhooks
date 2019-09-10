@@ -25,6 +25,9 @@ defmodule EspyWeb.Api.SubscriptionController do
 	    Cache.set(address, app.id)
 	    # return response
 	    json conn, %{success: true, subscription_id: subscription.subscription_id}
+	  {:exist, subscription} ->
+	    # return response
+	    json conn, %{success: true, subscription_id: subscription.subscription_id}
 	  {:error, %Ecto.Changeset{} = changeset } ->
 	    conn
 	    |> put_status(:unprocessable_entity)
