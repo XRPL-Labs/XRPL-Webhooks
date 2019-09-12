@@ -7,7 +7,7 @@ defmodule Espy.Watcher.Socket do
   alias Espy.Watcher.{Handler}
 
 
-  @url         "wss://s1.ripple.com:443"
+  @url         "wss://rippled.xrptipbot.com:443"
   @command     "subscribe"
   @streams     ["transactions"]
   @only_handle ["Payment"]
