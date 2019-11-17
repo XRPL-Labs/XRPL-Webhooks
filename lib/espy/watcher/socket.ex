@@ -1,19 +1,20 @@
 defmodule Espy.Watcher.Socket do
-
   require Logger
-
   use WebSockex
 
   alias Espy.Watcher.{Handler}
 
 
-  @url         "wss://rippled.xrptipbot.com:443"
+  @urls         ["wss://rippled.xrptipbot.com:443", "wss://s1.ripple.com:443"]
   @command     "subscribe"
   @streams     ["transactions"]
   @only_handle ["Payment"]
 
   def start_link(_opts \\ []) do
-    WebSockex.start_link(@url, __MODULE__, %{},[name: __MODULE__])
+    queue =  @urls |> :queue.from_list
+    {{:value, url}, queue} = :queue.out(queue)
+    queue = :queue.in(url, queue)
+    WebSockex.start_link(url, __MODULE__, %{queue: queue, url: url},[name: __MODULE__, handle_initial_conn_failure: true])
   end
 
   defp filter_transaction(parsed) do
@@ -54,14 +55,8 @@ defmodule Espy.Watcher.Socket do
     end
   end
 
-
-  def handle_discounnet(_conn, state) do
-    Logger.info "Disconnected from #{String.upcase(@url)}", ansi_color: :red
-    {:ok, state}
-  end
-
-  def handle_connect(_conn, state) do
-    Logger.info "Connected to ripple server #{String.upcase(@url)}", ansi_color: :green
+  def handle_connect(_conn, %{url: url} = state) do
+    Logger.info "Connected to ripple server #{String.upcase(url)}", ansi_color: :green
     subscribe_to_streams self()
     timer_ref = Process.send_after(self(), :timeout, 20000)
     {:ok, Map.put(state, :timer_ref, timer_ref)}
@@ -83,19 +78,37 @@ defmodule Espy.Watcher.Socket do
   end
 
 
-  def handle_disconnect(%{reason: {:local, reason}}, state) do
+  def handle_disconnect(%{reason: {:local, reason}}, %{timer_ref: timer_ref} = state) do
+    cancel_timer(timer_ref)
     Logger.info("Local close with reason: #{inspect reason}")
     Logger.info("Reconnecting...")
     {:reconnect, state}
   end
 
-  def handle_disconnect(disconnect_map, state) do
-    super(disconnect_map, state)
+  def handle_disconnect(%{reason: reson, conn: conn, attempt_number: attempt_number }, %{url: url, timer_ref: timer_ref} = state) when attempt_number < 5 do
+    cancel_timer(timer_ref)
+    Logger.info "Cannot Connect to #{String.upcase(url)} attempt #{attempt_number}", ansi_color: :red
+    Logger.info("Retring after 3 sec ...")
+    :timer.sleep(3000)
+    {:reconnect, conn, state}
+  end
+
+  def handle_disconnect(%{reason: reson, conn: connn, attempt_number: attempt_number }, %{queue: queue} = state) do
+    {{:value, head}, queue} = :queue.out(queue)
+    Logger.info "Switching the endpoint #{head}", ansi_color: :red
+    conn = WebSockex.Conn.new(head)
+    queue = :queue.in(head, queue)
+
+    state = Map.put(state, :queue, queue)
+    state = Map.put(state, :url, head)
+
+    {:reconnect, conn, state}
   end
 
 
   def terminate(reason, state) do
     Logger.info("Socket terminated with: #{inspect reason}")
+    exit(:normal)
   end
 
   defp cancel_timer(ref) do

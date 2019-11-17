@@ -13,7 +13,6 @@ defmodule Espy.Watcher.Supervisor do
       worker(Task.Supervisor, [[name: Espy.Supervisor.HTTPC]], id: :httpc)
     ]
 
-    opts = [strategy: :one_for_one, restart: :permanent]
-    supervise(children, opts)
+    supervise(children, strategy: :one_for_one)
   end
 end
